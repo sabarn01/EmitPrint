@@ -25,7 +25,7 @@ namespace EmitPrintLib
             {
                 GeneratedTypes.AddOrUpdate(Typ,GenPrinter(Typ),(x,y)=>y);
             }
-            ObjPrinter Printer;
+            ObjPrinter Printer; 
             GeneratedTypes.TryGetValue(Typ,out Printer);
             if(Printer != null)
             {
