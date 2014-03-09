@@ -5,7 +5,11 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmitPrintLib", "EmitPrintLib\EmitPrintLib.csproj", "{7A59A8E1-E68B-4F50-ACFB-947006432E36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSTest", "CSTest\CSTest.csproj", "{7C3C6A3F-1D4E-4B69-97E2-6D89263CCABE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmitPrintTest", "EmitPrintTest\EmitPrintTest.csproj", "{D3146605-1C91-431F-9098-6662218D1B07}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleConsoleTester", "SimpleConsoleTester\SimpleConsoleTester.csproj", "{DD80CE70-A362-4030-A997-A45346ABF453}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{AD55897E-DED5-4819-9DF3-724D2DA7BC80}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,12 +21,23 @@ Global
 		{7A59A8E1-E68B-4F50-ACFB-947006432E36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A59A8E1-E68B-4F50-ACFB-947006432E36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A59A8E1-E68B-4F50-ACFB-947006432E36}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7C3C6A3F-1D4E-4B69-97E2-6D89263CCABE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C3C6A3F-1D4E-4B69-97E2-6D89263CCABE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7C3C6A3F-1D4E-4B69-97E2-6D89263CCABE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C3C6A3F-1D4E-4B69-97E2-6D89263CCABE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3146605-1C91-431F-9098-6662218D1B07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3146605-1C91-431F-9098-6662218D1B07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3146605-1C91-431F-9098-6662218D1B07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3146605-1C91-431F-9098-6662218D1B07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD80CE70-A362-4030-A997-A45346ABF453}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD80CE70-A362-4030-A997-A45346ABF453}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD80CE70-A362-4030-A997-A45346ABF453}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD80CE70-A362-4030-A997-A45346ABF453}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD55897E-DED5-4819-9DF3-724D2DA7BC80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD55897E-DED5-4819-9DF3-724D2DA7BC80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD55897E-DED5-4819-9DF3-724D2DA7BC80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD55897E-DED5-4819-9DF3-724D2DA7BC80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45
 	EndGlobalSection
 EndGlobal

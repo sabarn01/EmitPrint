@@ -17,10 +17,11 @@ namespace CSTest
         static void Main(string[] args)
         {
             foo f = new foo{x=4,y = 19 };
-            BaseEmitPrinter Printer = new BaseEmitPrinter();
-            var msg = Printer.EmitPrintMessage(f);
-            Console.WriteLine(msg);
-            var val = Console.ReadLine();
+            var ObjPrinter = new EmitPrinter();
+            var s = ObjPrinter.EmitPrintMessage(f);
+            Console.WriteLine(s);
+        
+        
         }
     }
 }
