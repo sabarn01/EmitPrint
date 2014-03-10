@@ -51,7 +51,7 @@
     <Compile Include="IMethodCreator.cs" />
     <Compile Include="IPrinter.cs" />
     <Compile Include="MethodEmiter.cs" />
-    <Compile Include="Methods.cs" />
+    <Compile Include="KnownMethods.cs" />
     <Compile Include="EmitTypeCache.cs" />
     <Compile Include="ModuleMethodCreator.cs" />
     <Compile Include="PrinterNotFoundEventArgs.cs" />

@@ -16,24 +16,37 @@ using OC = System.Reflection.Emit.OpCodes;
         private readonly ILGenerator _Gen =null;
         private readonly TypeBuilder _TypeBuilder = null;
         private readonly Type _PrinterType;
-        
+        private readonly ModuleBuilder _Modlue;
+        private readonly MethodInfo _EmitMI;
+        private readonly MethodInfo _AppendFormat;
+        private readonly IEmitTypeCache _Cache; 
         #region Properties
-              
+          
         #endregion
         #region Constructors
 
-        internal AppendFormatMethodEmiter(Type ObjectType,TypeBuilder TB)
+        internal AppendFormatMethodEmiter(Type ObjectType,TypeBuilder TB,ModuleBuilder Module,IEmitTypeCache Cache)
         {
 
             _AppendFormatBuilder = TB.DefineMethod("AppendFormat", MethodAttribs, CallingConventions.HasThis, typeof(void), new Type[] { ObjectType, typeof(StringBuilder),typeof(IEmitTypeCache) });
             _Gen = _AppendFormatBuilder.GetILGenerator();
             _TypeBuilder = TB; 
-            _PrinterType = ObjectType; 
+            _PrinterType = ObjectType;
+            _Modlue = Module;
+            var T = typeof(TypeEmiter);
+            _EmitMI = typeof(TypeEmiter).GetMethod("Emit", EmitUtil.Bindings.NonPublicStatic);
+            Debug.Assert(_EmitMI != null); 
+            _Cache = Cache; 
         }
 
-        public static bool HasToStringOverload(object o)
+        MethodInfo GetEmitGeneric(Type T)
         {
-            return o.GetType().GetMethod("ToString", EmitUtil.Bindings.PublicInstDeclaredOnly) != null;             
+            return _EmitMI.MakeGenericMethod(T);
+        }
+
+        public static bool HasToStringOverload(Type o)
+        {
+            return o.GetMethod("ToString", EmitUtil.Bindings.PublicInstDeclaredOnly,null,Type.EmptyTypes,null) != null; 
         }
 
         [Conditional("DEBUG")]
@@ -55,32 +68,109 @@ using OC = System.Reflection.Emit.OpCodes;
             _Gen.Emit(OC.Ret);
         }
 
+        
+
         private void EnumerateProperites()
         {
-            
+
+            _Gen.Emit(OC.Ldarg_2);
  	        foreach(var prop in _PrinterType.GetProperties())            
             {
                 //Set up the first iteration by putting the string builder on the stack
-                _Gen.Emit(OC.Ldarg_2);
-                if(HasToStringOverload(prop.PropertyType))
+                
+                if (HasToStringOverload(prop.PropertyType))
                 {
-                    string appenFmtStr = prop.Name + " = {0} ; ";
-                    string DebugMsg = "Calling Append for property " + prop.Name;                    
-                    PrintDebugInfo(DebugMsg);             
-                    _Gen.Emit(OC.Ldstr,appenFmtStr);
-                    _Gen.Emit(OC.Ldarg_1);
-                    _Gen.Emit(OC.Callvirt,prop.GetGetMethod());
-                    if(prop.PropertyType.IsValueType)
-                    {
-                        _Gen.Emit(OC.Box,prop.PropertyType); 
-                    }
-                    //_Gen.Emit(OC.Ldstr, "Test");
-                    _Gen.Emit(OC.Call,KnownMethods.StringBuilderMethods.Append_Format_ObjectMI);
-                    PrintDebugInfo("End " + DebugMsg); 
+                    GeneratePrintProperty(prop);
                     //Next iteration is good because SB append returns sb 
                 }
-                //We want the stack to be unaffected after this method so clear the SB 
-                _Gen.Emit(OC.Pop); 
+                else
+                {
+                    var mi = EnsureTypeIsInCache(prop.PropertyType);
+                    GenAppendCall(prop ,mi);                                        
+                }
+                //We want the stack to be unaffected after this method so clear the SB                  
+            }
+            _Gen.Emit(OC.Pop);
+        }
+
+        private void GenAppendCall(PropertyInfo Prop, MethodInfo AppendFormateMi)
+        {
+            _Gen.Emit(OC.Ldstr, Prop.Name + " = {");
+            _Gen.Emit(OC.Call, KnownMethods.StringBuilderMethods.Append_StringMI);
+            _Gen.Emit(OC.Pop);
+            //Load the Type Cache onto stack 
+            _Gen.Emit(OC.Ldarg_3);            
+            _Gen.Emit(OC.Callvirt, KnownMethods.IEmitTypeCacheMethods.GetPrinter_ClosedT(Prop.PropertyType));
+            CallPropGet(Prop);
+            _Gen.Emit(OC.Ldarg_2);
+            _Gen.Emit(OC.Ldarg_3);
+            _Gen.Emit(OC.Callvirt, AppendFormateMi);
+            _Gen.Emit(OC.Ldarg_2);
+            _Gen.Emit(OC.Ldstr, "};");
+            _Gen.Emit(OC.Call, KnownMethods.StringBuilderMethods.Append_StringMI); 
+
+        }
+
+        private MethodInfo EnsureTypeIsInCache(Type printerType)
+        {
+            var mi = GetType().GetMethod("GenEnsureTypeIsInCache",EmitUtil.Bindings.NonPublicInst);
+            Debug.Assert(mi != null);
+            mi = mi.MakeGenericMethod(printerType);
+            return (MethodInfo) mi.Invoke(this, Type.EmptyTypes); 
+        }
+
+        /// <summary>
+        /// This function will get a printer from the cache if it exists if it doesn't 
+        /// it will create it 
+        /// </summary>
+        /// 
+        /// <param name="_PrinterType"></param>
+        /// <returns>
+        /// The closed generic mehtod info 
+        /// </returns>
+        private MethodInfo GenEnsureTypeIsInCache<T>()
+        {
+            IPrinter<T> typePrinter = null;
+            if (_Cache.TypeEmited(typeof(T)))
+            {
+                typePrinter = _Cache.GetPrinter<T>();
+            }
+            else
+            {
+                typePrinter = TypeEmiter.Emit<T>(_Modlue, _Cache);
+                _Cache.AddPrinter(typePrinter);
+            }            
+            return typePrinter.GetType().GetMethods().Where(x=> x.Name == "AppendFormat" ).First();
+            
+        }
+        /// <summary>
+        /// This function generates a sinle print of a proerty that has an overloaded 
+        /// ToString 
+        /// </summary>
+        /// <Preconditon>
+        /// There must be a string builder on the stack when this method is called
+        /// or it will generate an ivalid image 
+        /// </Preconditon>
+        /// <param name="prop"></param>
+        private void GeneratePrintProperty(PropertyInfo prop)
+        {
+            string appenFmtStr = prop.Name + " = {0} ; ";
+            string DebugMsg = "Calling Append for property " + prop.Name;
+            PrintDebugInfo(DebugMsg);
+            _Gen.Emit(OC.Ldstr, appenFmtStr);
+            CallPropGet(prop);
+            //_Gen.Emit(OC.Ldstr, "Test");
+            _Gen.Emit(OC.Call, KnownMethods.StringBuilderMethods.Append_Format_ObjectMI);
+            PrintDebugInfo("End " + DebugMsg);
+        }
+
+        private void CallPropGet(PropertyInfo prop)
+        {
+            _Gen.Emit(OC.Ldarg_1);
+            _Gen.Emit(OC.Callvirt, prop.GetGetMethod());
+            if (prop.PropertyType.IsValueType)
+            {
+                _Gen.Emit(OC.Box, prop.PropertyType);
             }
         }
 

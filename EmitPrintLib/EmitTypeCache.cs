@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace EmitPrintLib
 {
+
     class EmitTypeCache : IEmitTypeCache
     {
         private readonly Dictionary<Type,IPrinter> _emitedPrinters = new Dictionary<Type,IPrinter>(); 

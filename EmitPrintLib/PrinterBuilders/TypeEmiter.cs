@@ -29,7 +29,7 @@
             _ObjectType = ObjectType; 
             _TypeBuilder = ModuleBuilder.DefineType(GetImplName(ObjectType), ClassAttribs, closedType); 
             _TypeCache = TypeCache;
-            _AppendFormatEmiter = new AppendFormatMethodEmiter(_ObjectType, _TypeBuilder); 
+            _AppendFormatEmiter = new AppendFormatMethodEmiter(_ObjectType, _TypeBuilder,ModuleBuilder,_TypeCache); 
         }
         /// <summary>
         /// Creates the type an then call the metod generators 
@@ -49,6 +49,7 @@
         }
 
         
+        
 
         /// <summary>
         /// Static method created the type and passes the type builder to the nested class 
@@ -61,10 +62,8 @@
         {   
             Type InterfaceType = typeof(IPrinter<T>);                        
             var Emiter = new TypeEmiter(theModlue, typeof(T), theCache);
-            return (IPrinter<T>) Emiter.CreateType(); 
-            
+            return (IPrinter<T>) Emiter.CreateType();             
         }
-
 
         internal static string GetImplName(Type TheType)
         {
