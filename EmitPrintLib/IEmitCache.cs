@@ -10,6 +10,10 @@ namespace EmitPrintLib
     public delegate void PrinterNotFoundHandler(IEmitTypeCache sender, PrinterNotFoundEventArgs Args);
     public interface IEmitTypeCache
     {
+        /// <summary>
+        /// Any type passed into this interface will passed into type resolver first 
+        /// </summary>
+        //TypeResolver Resolver { get; set; }
         //event PrinterNotFoundHandler PrinterNotFound; 
         bool TypeEmited(Type T);
         /// <summary>

@@ -42,9 +42,7 @@ namespace EmitPrintLib
         string FormatObject(object ob, IEmitTypeCache cache);          
     }
     public interface  IPrinter<T> : IPrinter
-    {
-        string FormatObject(object obj,IEmitTypeCache cache);
-
+    {     
         void AppendFormat(T obj, StringBuilder sb, IEmitTypeCache cache);
     }    
 }

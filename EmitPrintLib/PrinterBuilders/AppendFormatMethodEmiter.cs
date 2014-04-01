@@ -38,7 +38,7 @@ using OC = System.Reflection.Emit.OpCodes;
             Debug.Assert(_EmitMI != null); 
             _Cache = Cache; 
         }
-
+        #endregion
         MethodInfo GetEmitGeneric(Type T)
         {
             return _EmitMI.MakeGenericMethod(T);
@@ -156,11 +156,24 @@ using OC = System.Reflection.Emit.OpCodes;
         {
             string appenFmtStr = prop.Name + " = {0} ; ";
             string DebugMsg = "Calling Append for property " + prop.Name;
-            PrintDebugInfo(DebugMsg);
-            _Gen.Emit(OC.Ldstr, appenFmtStr);
-            CallPropGet(prop);
-            //_Gen.Emit(OC.Ldstr, "Test");
-            _Gen.Emit(OC.Call, KnownMethods.StringBuilderMethods.Append_Format_ObjectMI);
+            //IF there is an overload for my type on string build call that 
+            var typeSpesifMI = KnownMethods.StringBuilderMethods.Append_ByType(prop.PropertyType);
+            if(typeSpesifMI != null)
+            {
+                CallPropGet(prop);
+                _Gen.Emit(OC.Call, typeSpesifMI);
+            }
+            else
+            {
+                PrintDebugInfo(DebugMsg);
+                _Gen.Emit(OC.Ldstr, appenFmtStr);
+                CallPropGet(prop);
+                if (prop.PropertyType.IsValueType)
+                {
+                    _Gen.Emit(OC.Box, prop.PropertyType);
+                }
+                _Gen.Emit(OC.Call, KnownMethods.StringBuilderMethods.Append_Format_ObjectMI);
+            }
             PrintDebugInfo("End " + DebugMsg);
         }
 
@@ -168,10 +181,7 @@ using OC = System.Reflection.Emit.OpCodes;
         {
             _Gen.Emit(OC.Ldarg_1);
             _Gen.Emit(OC.Callvirt, prop.GetGetMethod());
-            if (prop.PropertyType.IsValueType)
-            {
-                _Gen.Emit(OC.Box, prop.PropertyType);
-            }
+            
         }
 
 
@@ -211,7 +221,7 @@ using OC = System.Reflection.Emit.OpCodes;
             return false;
         }
 
-        #endregion
+        
 
     }
 }

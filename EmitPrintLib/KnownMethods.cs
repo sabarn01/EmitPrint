@@ -35,6 +35,11 @@ namespace EmitPrintLib.KnownMethods
         //public static MethodInfo Append_Format_StringMI { get; private set; }
         public static MethodInfo Append_Format_ObjectMI { get; private set; }
 
+        public static MethodInfo Append_ByType(Type t)
+        {
+            return sbtype.LookupMI("Append", new Type[] { t });
+        }
+
     }
         
  
