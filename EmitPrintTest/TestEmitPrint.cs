@@ -32,8 +32,7 @@ namespace EmitPrintTest
     {
         [TestMethod]
         public void WhenNullPassedInNullMessage()
-        {
-            NoToString TestObj = null;
+        {            
             EmitPrinter Printer = new EmitPrinter("TestFoo");
             var res = Printer.EmitPrintMessage<NoToString>(null);
             Assert.AreEqual("{ NULL }", res); 

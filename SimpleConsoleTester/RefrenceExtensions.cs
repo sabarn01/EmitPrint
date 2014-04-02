@@ -28,7 +28,7 @@ namespace SimpleConsoleTester
         /// this function checks to see if the object has a to string implemntation
         /// other wise it calls appendproperties 
         /// </summary>
-        /// <param name="o"></param>
+        /// <param name="theType"></param>
         /// <param name="sb"></param>
         private static void AppendProperty(this object o, StringBuilder sb, bool recurse = true)
         {

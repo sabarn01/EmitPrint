@@ -1,34 +1,45 @@
-﻿using EmitPrintLib.PrinterBuilders;
-//#define foo 
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EmitPrintLib
+﻿namespace EmitPrintLib
 {
-    delegate string ObjPrinter(object o);
-    delegate void   TypeOverride(StringBuilder sb);
+    using System.Text;
+    using EmitPrintLib.PrinterBuilders;
+    
+    /// <summary>
+    /// <see cref="EmitPrinter"/> is a builder for the emit print library 
+    /// it creates the necessary types to create a printer. 
+    /// </summary>
     public class EmitPrinter
     {
-        readonly AsseblyBuilderUtil _asmUtil = null;
-        readonly IEmitTypeCache _typeCache = null; 
-        public EmitPrinter(string AssemblyName):
-            this(AssemblyName,new EmitTypeCache())
-        {
-            
+        private readonly AsseblyBuilderUtil _asmUtil = null;
+        private readonly IEmitTypeCache _typeCache = null; 
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EmitPrinter"/> class
+        /// </summary>
+        /// <param name="AssemblyName">The Name of the assembly to create</param>
+        public EmitPrinter(string AssemblyName) :
+            this(AssemblyName, new EmitTypeCache())
+        {            
         }
 
-        public EmitPrinter(string AssemblyName,IEmitTypeCache cache)
-            
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EmitPrinter"/> class
+        /// </summary>
+        /// <param name="AssemblyName">The name of the dynamic assembly to create</param>
+        /// <param name="cache">The <see cref="IEmitTypeCache"/> which contains created 
+        /// printers 
+        /// </param>
+        public EmitPrinter(string AssemblyName, IEmitTypeCache cache)            
         {
             _typeCache = cache;
-            _asmUtil = new AsseblyBuilderUtil("PrintTest");
+            _asmUtil = new AsseblyBuilderUtil(AssemblyName);
         }
-        
+
+        /// <summary>
+        /// Creates an <see cref="IPrinter{T}"/> and uses it to return a string.
+        /// </summary>
+        /// <typeparam name="T">The type to print</typeparam>
+        /// <param name="obj">The object to print</param>
+        /// <returns>A string created by the Printers</returns>
         public string EmitPrintMessage<T>(T obj)
         {
             var theType = typeof(T); 
@@ -38,16 +49,16 @@ namespace EmitPrintLib
                 _typeCache.AddPrinter(emiter); 
                 _asmUtil.Save(); 
             }
-            var tPrinter = _typeCache.GetPrinter<T>();             
-            if (tPrinter != null)
+
+            var emitPrinter = _typeCache.GetPrinter<T>();             
+            if (emitPrinter != null)
             {
-                return tPrinter.FormatObject(obj, _typeCache);
+                return emitPrinter.FormatObject(obj, _typeCache);
             }
             else
             {
                 return obj.ToString();
             }
-        }   
-        
+        }           
     }
 }

@@ -1,41 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EmitPrintLib
+﻿namespace EmitPrintLib
 {
-    class AsseblyBuilderUtil 
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.Reflection.Emit;
+
+    /// <summary>
+    /// Class abstracts creating assemblies
+    /// </summary>
+    internal class AsseblyBuilderUtil 
     {
-        const TypeAttributes NormalTypeAttribs = TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.BeforeFieldInit;
-        List<TypeBuilder> CreatedTypes = new List<TypeBuilder>();
         public readonly ModuleBuilder MainModlue;
-        string AsemblysName = "";
-        string AssemblyFileName
+        private const TypeAttributes NormalTypeAttribs = TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.BeforeFieldInit;
+        private string AsemblysName = string.Empty;
+        private AssemblyBuilder AsmBuilder = null;
+        private List<TypeBuilder> CreatedTypes = new List<TypeBuilder>();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AsseblyBuilderUtil"/> class. 
+        /// </summary>
+        /// <param name="assemblyName">The name of the Assembly to create</param>
+        public AsseblyBuilderUtil(string assemblyName)
+        {
+            this.AsemblysName = assemblyName;
+            var AsmName = new AssemblyName(assemblyName);
+            AsmBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(AsmName, AssemblyBuilderAccess.RunAndSave);
+
+            MainModlue = AsmBuilder.DefineDynamicModule(assemblyName, AssemblyFileName);
+        }
+
+        private string AssemblyFileName
         {
             get
             {
-                return AsemblysName + ".dll"; 
+                return AsemblysName + ".dll";
             }
-        }
-        AssemblyBuilder AsmBuilder = null;
-        public AsseblyBuilderUtil(string sAsmName)
-        {
-            this.AsemblysName = sAsmName;
-            var AsmName = new AssemblyName(sAsmName);
-            AsmBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(AsmName, AssemblyBuilderAccess.RunAndSave);
-
-            MainModlue = AsmBuilder.DefineDynamicModule(sAsmName, AssemblyFileName);
         }
       
         public void Save()
         {
             AsmBuilder.Save(AssemblyFileName);
         }
-
-   
     }
 }

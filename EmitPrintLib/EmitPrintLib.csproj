@@ -43,26 +43,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ITypeResolver.cs" />
-    <Compile Include="PrinterBuilders\AppendFormatMethodEmiter.cs" />
+    <Compile Include="KnownMethods\IEmitTypeCacheMethods.cs" />
+    <Compile Include="KnownMethods\ObjectMethods.cs" />
+    <Compile Include="KnownMethods\StringBuilderMethods.cs" />
+    <Compile Include="PrinterBuilders\AppendFormatGenerator.cs" />
     <Compile Include="PrinterBuilders\TypeEmiter.cs" />
     <Compile Include="DynamicTypeCreator.cs" />
     <Compile Include="EmitPrinter.cs" />
     <Compile Include="EmitUtil.cs" />
     <Compile Include="IEmitCache.cs" />
-    <Compile Include="IMethodCreator.cs" />
     <Compile Include="IPrinter.cs" />
-    <Compile Include="MethodEmiter.cs" />
-    <Compile Include="KnownMethods.cs" />
     <Compile Include="EmitTypeCache.cs" />
-    <Compile Include="ModuleMethodCreator.cs" />
-    <Compile Include="PrinterNotFoundEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TopLevelPrintFn.cs" />
-    <Compile Include="TypeResolver.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="EmitPrint.cd" />
     <None Include="packages.config" />
+    <None Include="SequenceDiagram1.sequencediagram" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SequenceDiagram1.sequencediagram.layout">
+      <DependentUpon>SequenceDiagram1.sequencediagram</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

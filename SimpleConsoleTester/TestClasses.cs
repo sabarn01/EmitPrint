@@ -19,7 +19,6 @@ namespace SimpleConsoleTester
             myFoo = new foo();
         }
         public int X { get; set; }
-
         public foo myFoo { get; set; }
     }
 

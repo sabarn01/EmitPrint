@@ -21,7 +21,7 @@ namespace SimpleConsoleTester
             string fmtStr = String.Format("{{0,-{0}}}|{{1,-6}}|{{2,-6}}|{{3,-6}}|{{4,-7}}|{{5,-6}}", longestDescription);
             sb.AppendFormat(fmtStr,"Description","High","Mean","Low","Average","BatchSize");
             sb.AppendLine(); 
-            foreach(var itm in trList)
+            foreach (var itm in trList)
             {
                 
                 sb.AppendFormat(fmtStr,
@@ -138,12 +138,12 @@ namespace SimpleConsoleTester
             List<TestResult> Results = new List<TestResult>();
             
             Results.Add(TestRunner.RunTest("Composit object with overload ", RunCount, BatchSize, compwithoverloadAct));
-            Results.Add(TestRunner.RunTest("Composit object with overload ", RunCount * 10, BatchSize, compwithoverloadAct));
+            //Results.Add(TestRunner.RunTest("Composit object with overload ", RunCount * 10, BatchSize, compwithoverloadAct));
             Results.Add(TestRunner.RunTest("Comps without overload ", RunCount, BatchSize, compsReflection));
-            Results.Add(TestRunner.RunTest("Comps without overload ", RunCount * 10, BatchSize, compsReflection));
+            //Results.Add(TestRunner.RunTest("Comps without overload ", RunCount * 10, BatchSize, compsReflection));
             Results.Add(TestRunner.RunTest("Emit Print ", RunCount, BatchSize, emitprint));
-            Results.Add(TestRunner.RunTest("Emit Print ", RunCount * 10, BatchSize, emitprint));
-            Results.Add(TestRunner.RunTest("Access through an expression", RunCount, BatchSize, AccessThoughAnEx));
+            //Results.Add(TestRunner.RunTest("Emit Print ", RunCount * 10, BatchSize, emitprint));
+            //Results.Add(TestRunner.RunTest("Access through an expression", RunCount, BatchSize, AccessThoughAnEx));
             Results.Add(TestRunner.RunTest("Access a dynamic method", RunCount, BatchSize, dynAcMember));
             Results.Add(TestRunner.RunTest("access a static method", RunCount, BatchSize, staticAcMember));
 

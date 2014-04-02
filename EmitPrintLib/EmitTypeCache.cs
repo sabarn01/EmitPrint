@@ -1,39 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EmitPrintLib
+﻿namespace EmitPrintLib
 {
+    using System;
+    using System.Collections.Generic;
 
-    class EmitTypeCache : IEmitTypeCache
+    internal class EmitTypeCache : IEmitTypeCache
     {
-        private readonly Dictionary<Type,IPrinter> _emitedPrinters = new Dictionary<Type,IPrinter>(); 
-        
+        private readonly Dictionary<Type, object> _emitedPrinters = new Dictionary<Type, object>();
+
         public bool TypeEmited(Type T)
         {
- 	        return _emitedPrinters.ContainsKey(T) ;
-        }
-        
-        public IPrinter GetPrinter(Type T)
-        {
-            return _emitedPrinters[T]; 
+            return _emitedPrinters.ContainsKey(T);
         }
 
         public IPrinter<T> GetPrinter<T>()
         {
-            return (IPrinter<T>)GetPrinter(typeof(T)); 
+            return (IPrinter<T>)_emitedPrinters[typeof(T)];
         }
 
         public void AddPrinter<T>(IPrinter<T> printer)
-        {                         
-            _emitedPrinters.Add(typeof(T),printer);
+        {
+            _emitedPrinters.Add(typeof(T), printer);
         }
-
-    
-
     }
-    
 }
